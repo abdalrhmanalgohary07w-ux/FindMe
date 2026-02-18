@@ -2,7 +2,7 @@
     PYTHON_VERSION = "3.10"
 
 [phases.setup]
-    aptPkgs = ["python3", "gcc", "libgl1", "libglib2.0-0", "libxcb1", "libx11-6", "libxext6", "libxrender1", "fontconfig", "libx11-xcb1", "libdbus-1-3"]
+    nixPkgs = ["python310", "gcc"]
 
 [start]
-    cmd = "python manage.py migrate && gunicorn findme_backend.wsgi:application --log-file -"
+    cmd = "gunicorn findme_backend.wsgi:application --log-file -"
