@@ -6,6 +6,7 @@ def api_root(request):
         "version": "1.0",
         "status": "running",
         "endpoints": {
+            "admin": "/admin/",
             "missing_persons": "/api/missing-persons/",
             "search": "/api/missing-persons/search-by-image/"
         }
