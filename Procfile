@@ -1,1 +1,1 @@
-web: gunicorn findme_backend.wsgi --log-file -
+web: gunicorn findme_backend.wsgi:application --log-file -
