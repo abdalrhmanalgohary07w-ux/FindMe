@@ -3,3 +3,6 @@
 
 [phases.setup]
     nixPkgs = ["python310", "gcc"]
+
+[start]
+    cmd = "gunicorn findme_backend.wsgi:application --log-file -"
