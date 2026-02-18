@@ -12,10 +12,12 @@ try:
     from deepface import DeepFace
     DEEPFACE_AVAILABLE = True
 except Exception as e:
+    import traceback
+    DEEPFACE_ERROR = f"{str(e)}\n{traceback.format_exc()}"
     DEEPFACE_AVAILABLE = False
-    print(f"Warning: DeepFace could not be loaded ({str(e)}). Image search will be unavailable.")
+    print(f"Warning: DeepFace could not be loaded. Error: {str(e)}")
 
-class MissingPersonViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+class MissingPersonViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = MissingPerson.objects.all().order_by('-created_at')
     serializer_class = MissingPersonSerializer
 
@@ -25,7 +27,10 @@ class MissingPersonViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
             return Response({'error': 'No image provided'}, status=status.HTTP_400_BAD_REQUEST)
         
         if not DEEPFACE_AVAILABLE:
-            return Response({'error': 'Image search engine is currently offline on the server'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            return Response({
+                'error': 'Image search engine is currently offline on the server',
+                'detail': globals().get('DEEPFACE_ERROR', 'Unknown error during import')
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         uploaded_image = request.FILES['image']
         

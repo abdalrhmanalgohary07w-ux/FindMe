@@ -65,7 +65,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-The API will be available at: `http://127.0.0.1:8000/`
+The API will be available at: `https://web-production-d8559f.up.railway.app/`
 
 ## API Endpoints
 
@@ -78,7 +78,7 @@ The API will be available at: `http://127.0.0.1:8000/`
 - **POST** `/api/missing-persons/search-by-image/` - Search by image (placeholder)
 
 ### Admin Panel
-Access the Django admin panel at: `http://127.0.0.1:8000/admin/`
+Access the Django admin panel at: `https://web-production-d8559f.up.railway.app/admin/`
 
 ## Project Structure
 ```
@@ -100,7 +100,7 @@ Backend/
 ```
 
 ## Flutter Integration
-The Flutter app should point to:
+- **Production:** `https://web-production-d8559f.up.railway.app/api`
 - **Windows/iOS Simulator:** `http://127.0.0.1:8000/api`
 - **Android Emulator:** `http://10.0.2.2:8000/api`
 
