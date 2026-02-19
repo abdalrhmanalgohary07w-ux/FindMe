@@ -8,14 +8,15 @@ from .serializers import MissingPersonSerializer
 from django.conf import settings
 
 # Attempt to import DeepFace
+DEEPFACE_ERROR = None
 try:
     from deepface import DeepFace
     DEEPFACE_AVAILABLE = True
 except Exception as e:
     import traceback
-    DEEPFACE_ERROR = f"{str(e)}\n{traceback.format_exc()}"
+    DEEPFACE_ERROR = f"DeepFace Import Error: {str(e)}\n{traceback.format_exc()}"
     DEEPFACE_AVAILABLE = False
-    print(f"Warning: DeepFace could not be loaded. Error: {str(e)}")
+    print(f"CRITICAL: {DEEPFACE_ERROR}")
 
 class MissingPersonViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = MissingPerson.objects.all().order_by('-created_at')
@@ -50,13 +51,17 @@ class MissingPersonViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, views
                 try:
                     target_image_path = person.image.path
                     
-                    # Improved verification parameters for higher accuracy
+                    if not os.path.exists(target_image_path):
+                        print(f"Image for person {person.id} not found at {target_image_path}")
+                        continue
+
+                    # Improved verification parameters for maximum accuracy
                     result = DeepFace.verify(
                         img1_path=search_image_path,
                         img2_path=target_image_path,
-                        enforce_detection=True, # Ensure a face is actually found
+                        enforce_detection=True, 
                         model_name='Facenet512',
-                        detector_backend='retinaface', # MUCH more accurate than opencv
+                        detector_backend='retinaface', # Back to high accuracy mode
                         distance_metric='cosine',
                         align=True
                     )
