@@ -30,7 +30,7 @@ class MissingPersonViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, views
         if not DEEPFACE_AVAILABLE:
             return Response({
                 'error': 'Image search engine is currently offline on the server',
-                'detail': globals().get('DEEPFACE_ERROR', 'Unknown error during import')
+                'detail': str(DEEPFACE_ERROR) if 'DEEPFACE_ERROR' in globals() else 'Unknown import error'
             }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         uploaded_image = request.FILES['image']
@@ -55,13 +55,13 @@ class MissingPersonViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, views
                         print(f"Image for person {person.id} not found at {target_image_path}")
                         continue
 
-                    # Improved verification parameters for maximum accuracy
+                    # MTCNN is a great balance between high accuracy and manageable RAM usage (less than 1GB)
                     result = DeepFace.verify(
                         img1_path=search_image_path,
                         img2_path=target_image_path,
                         enforce_detection=True, 
                         model_name='Facenet512',
-                        detector_backend='retinaface', # Back to high accuracy mode
+                        detector_backend='mtcnn', # High accuracy, less RAM than RetinaFace
                         distance_metric='cosine',
                         align=True
                     )
